@@ -1,0 +1,15 @@
+# Dependencias y builds
+node_modules/
+dist/
+build/
+.svelte-kit/
+target/
+__pycache__/
+bin/
+obj/
+
+# Artefactos del dominio (datos crudos regenerables — los datos procesados SÍ van a git)
+# {{AÑADE_AQUÍ_LO_QUE_NO_SE_VERSIONA_EN_TU_PROYECTO}}
+
+# Temporales
+*.tmp
