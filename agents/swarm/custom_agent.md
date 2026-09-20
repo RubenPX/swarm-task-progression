@@ -25,8 +25,14 @@
 3. **Verifica cada fase** antes de la siguiente:
    - Datos: el pipeline correspondiente + comprueba que los generados tienen lo esperado (cuenta registros, spot-checkea 2-3 valores contra la fuente).
    - Código: `{{CHECK_CMD}}` (debe dar 0 errores) y `{{BUILD_CMD}}` (debe terminar limpio).
-4. **Test de completitud**: si añades una sección/módulo, enlázalo con lo existente y asegúrate de que TODO texto existe en los idiomas que corresponda.
-5. **Actualiza `TODO.md`** al terminar (marca hecho, describe en 1-2 líneas qué se hizo). Si descubriste un gotcha nuevo, añádelo a `AGENTS.md`.
+   - Rendimiento: si afirmas que algo es lazy/ligero, la prueba es una auditoría del build output (qué chunks se emiten, su tamaño y gzip real, y que el entry NO los referencia). Afirmar sin auditar = −0.5.
+4. **Patrones probados** (úsalos, son el estándar del sistema):
+   - **Orden de refactor**: pipeline → consumidor → borrar lo viejo AL FINAL. La web debe funcionar en cada paso intermedio; nunca rompas a mitad de refactor.
+   - **Consistencia por construcción**: los datos derivados (índices, búsquedas, resúmenes) se generan IMPORTANDO los módulos ya generados, no re-parseando la fuente original — así no pueden divergir de la wiki.
+   - **Validación dura**: ante clave faltante, duplicado o enum desconocido, el pipeline hace throw (fallar el sync se ve enseguida; un hueco silencioso rompe la web en runtime).
+   - **Auto-corrección pre-commit**: si detectas tu propio error antes de committear, corrígelo y decláralo en el informe (§7) — se recompensa; ocultarlo es lo imperdonable.
+5. **Test de completitud**: si añades una sección/módulo, enlázalo con lo existente y asegúrate de que TODO texto existe en los idiomas que corresponda.
+6. **Actualiza `TODO.md`** al terminar (marca hecho, describe en 1-2 líneas qué se hizo). Si descubriste un gotcha nuevo, añádelo a `AGENTS.md`. Si descubriste un MÉTODO reutilizable (parser, truco de extracción, formato de verificación), documéntalo en §8 del informe — cada método escrito ahorra horas al siguiente.
 
 ## 3. Informe final obligatorio — SE ESCRIBE A UN ARCHIVO (para el revisor)
 

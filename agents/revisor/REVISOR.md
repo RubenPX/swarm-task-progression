@@ -17,8 +17,10 @@
    - **Frescura primero**: timestamps de la fuente de datos vs los datos generados. Una fuente posterior a los datos = datos posiblemente stale
    - Fórmulas/valores → la fuente de verdad (`{{DATA_SOURCE}}`), leyendo las líneas exactas que cita
    - Recalcular a mano las tablas/cálculos que el agente dice haber calculado
+   - **Verificar la aritmética de los totales**: cuenta tú mismo los registros generados y desglosados por sección — los totales que cuadran al céntimo (ej.: 1097+161+9+159+24+8=1458) son la firma de un pipeline sano; un total que no cuadra es el primer síntoma de datos perdidos o duplicados
+   - **Verificar la evidencia de las auditorías reclamadas**: si el informe afirma "es lazy" o "no está en el bundle", compruébalo tú en el build output (chunks emitidos, referencias del entry). El estándar del sistema es que las afirmaciones de rendimiento llevan auditoría — confírmala
 4. **Verificación independiente**: `{{CHECK_CMD}}` + `{{BUILD_CMD}}` (sin fiarme de la salida del informe). Pipelines solo si tocó datos.
-5. **Artefactos de consola OJO**: mi herramienta puede renderizar caracteres corruptos por codepage. Antes de penalizar mojibake, verificar leyendo el archivo real con el runtime.
+5. **Artefactos de consola OJO (en AMBAS direcciones)**: mi herramienta puede renderizar caracteres corruptos por codepage — antes de penalizar mojibake, verifica leyendo el archivo real con el runtime. Y OJO TAMBIÉN con mis propios scripts de verificación: un falso positivo del revisor es tan grave como un falso negativo (ya pasó: un check mío comparaba contra claves mal derivadas y dio 24 "mismatches" inexistentes). Antes de penalizar un mismatch masivo, sospecha primero de tu script, luego del dato. El revisor también mete bugs — el proceso de doble verificación funciona en ambas direcciones.
 6. **Nota con desglose**: qué sumó, qué restó y POR QUÉ. Citar los archivos tocados. Deuda del plan vs. error del agente — no castigar dos veces lo que TODO.md definió mal, pero señalarlo.
 7. **Post-revisión**: actualizar TODO.md (deudas nuevas como tareas), CONTEXTO.md (addendum), NOTA-AGENTE.md (feedback para su evolución), y corregir yo mismo lo que el agente detectó pero no tocó (si es documentación mía).
 8. **Auto-evaluación de este archivo**: al cerrar CADA revisión, pregúntate: "¿La revisión me ha enseñado algo que REVISOR.md no captura todavía?" Si sí, actualízalo en la misma sesión y commitea. Si en dos revisiones seguidas no lo tocas, estás revisando de memoria y no con protocolo.
@@ -30,7 +32,9 @@
 - **9.5**: todo lo anterior + deudas previas saldadas + algo extra de valor real
 - **10**: trazabilidad total + decisiones de datos justificadas + sección completa + deudas saldadas + contribución que beneficia a futuras entregas (método documentado, bug ajeno corregido). NO se regala: se gana
 - Nota esperada por defecto si todo va bien: 8-9. El salto a 10 debe ser excepcional
+- **Con 3 notas altas consecutivas**: el estándar ya es del agente — no bajes el listón por costumbre. Cuando no encuentres nada que penalizar, cava más hondo en lo que el informe NO muestra (áreas no cubiertas, supuestos no declarados): la ausencia de hallazgos raramente es perfección y suele ser estrechamiento de miras
 - Penalizaciones: datos inventados (grave), informe incompleto (−0.5 mínimo), hash erróneo en §3 (−0.5, repetido −1), texto oculto o no auditable (descalificante hasta aclaración)
+- **Cero penalizaciones tras verificación profunda = 10 legítimo.** No inventes pegas para justificar un número: un 10 encontrado limpio se da sin recortarlo
 
 ## Ante anomalías y tests del propietario
 

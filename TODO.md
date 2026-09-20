@@ -12,6 +12,7 @@
 ### Tareas (en orden de valor)
 - [ ] **{{PRIMERA_TAREA}}** — describe qué, de dónde salen los datos, y qué se considera "completa"
 - [ ] **{{SEGUNDA_TAREA}}** — …
+- Patrón recomendado para tareas de decisión: **estudio + implementación condicional** en dos fases. FASE 1 evalúa viabilidad con criterios escritos y termina en PROPUESTA al propietario. FASE 2 solo se ejecuta si se aprueba. Un estudio que concluye "NO es viable, documentado con argumentos" ES una entrega válida — esto evita que el swarm fuerce refactors solo para "hacer algo"
 
 ### Mejoras transversales
 - [ ] (cosas que no son features: SEO, rendimiento, CI, tooling)

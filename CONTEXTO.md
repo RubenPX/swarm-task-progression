@@ -8,7 +8,8 @@
 
 ## Cosas delicadas que NO están en AGENTS.md
 
-- (trucos de flujo que solo existen en memoria: comandos manuales a medias, repros de bugs, métodos de extracción)
+- (trucos de flujo que solo existen en memoria: comandos manuales a medias, repros de bugs, métodos de extracción — ej.: "el parser char-a-char de C# decompilado", "extraer el JSON de un .ts con indexOf('= [') + 2")
+- (bugs conocidos del REVISOR: si el revisor corrigió un error propio en el pasado, anótalo — el agente debe saber que la doble verificación funciona en ambas direcciones)
 
 ## Puntos de decisión del propietario ya tomados (no re-preguntar)
 
