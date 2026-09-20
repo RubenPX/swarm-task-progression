@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskProgressionSwarm — plantilla de trabajo con agentes</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-soft: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #d29922;
+    --danger: #f85149;
+    --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    padding: 80px 0 48px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0d1117 0%, #10161f 100%);
+  }
+  .tagline {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 20px;
+    background: var(--bg-soft);
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+  h1 .highlight { color: var(--accent); }
+  .subtitle {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 640px;
+  }
+
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+  h2::before {
+    content: "// ";
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 1.1rem;
+  }
+  p.lead { color: var(--muted); max-width: 720px; margin-bottom: 24px; }
+
+  /* Roles */
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .card p { font-size: 0.92rem; color: var(--muted); }
+  .card .file {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.1);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 12px;
+  }
+  .card.owner h3 { color: var(--accent3); }
+  .card.swarm h3 { color: var(--accent); }
+  .card.revisor h3 { color: var(--accent2); }
+
+  /* Bucle */
+  .loop {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .loop .step { padding: 6px 0; white-space: nowrap; }
+  .loop .arrow { color: var(--muted); padding-left: 12px; }
+  .loop .who { color: var(--accent); font-weight: bold; }
+  .loop .reward { color: var(--accent2); }
+  .loop .file-ref { color: var(--accent3); }
+
+  /* Principios */
+  .principios { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; counter-reset: pr; }
+  .principio {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 16px;
+  }
+  .principio strong { display: block; margin-bottom: 4px; }
+  .principio span { font-size: 0.9rem; color: var(--muted); }
+  .principio::before {
+    counter-increment: pr;
+    content: counter(pr, decimal-leading-zero);
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+
+  /* Estructura */
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.7;
+  }
+  .tree .dir { color: var(--accent); font-weight: bold; }
+  .tree .comment { color: var(--muted); }
+  .tree .key { color: var(--accent2); }
+
+  /* Montaje */
+  .steps { list-style: none; counter-reset: st; }
+  .steps li {
+    counter-increment: st;
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .steps li::before {
+    content: counter(st);
+    flex: 0 0 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-weight: bold;
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: 6px;
+  }
+  .steps strong { display: block; }
+  .steps span { color: var(--muted); font-size: 0.92rem; }
+
+  footer {
+    padding: 40px 0 64px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer code { font-family: var(--mono); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <span class="tagline">plantilla &middot; trabajo con agentes de IA</span>
+    <h1>Task<span class="highlight">Progression</span>Swarm</h1>
+    <p class="subtitle">Un algoritmo swarm hace las tareas, un agente revisor independiente las audita contra la realidad, y la nota que emite alimenta el aprendizaje del swarm. Cada rol tiene su carpeta, cada documento su dueño.</p>
+  </div>
+</header>
+
+<section id="roles">
+  <div class="container">
+    <h2>Los tres roles</h2>
+    <div class="roles">
+      <div class="card owner">
+        <h3>El propietario</h3>
+        <p>Orquesta y decide. Elige la tarea del TODO.md y decide si la entrega se queda, se corrige o se revierte. Puede inyectar pruebas para verificar que la auditoría es real.</p>
+        <span class="file">agents/owner/boot_swarm.md</span>
+      </div>
+      <div class="card swarm">
+        <h3>El swarm</h3>
+        <p>El agente de trabajo. Ejecuta tareas con protocolo estricto: plan por escrito, commits pequeños y atómicos, verificación por fase e informe obligatorio de 8 secciones.</p>
+        <span class="file">agents/swarm/custom_agent.md</span>
+      </div>
+      <div class="card revisor">
+        <h3>El revisor</h3>
+        <p>El evaluador independiente. Diffea los commits, contrasta cada dato con la fuente de verdad y emite una nota 1-10: la recompensa del sistema.</p>
+        <span class="file">agents/revisor/REVISOR.md</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bucle">
+  <div class="container">
+    <h2>El bucle</h2>
+    <p class="lead">La nota del revisor alimenta el feedback de evolución del swarm. El evaluado jamás edita sus propias reglas: los protocolos los aplica el revisor tras aprobación del propietario.</p>
+    <div class="loop">
+      <div class="step"><span class="who">TODO.md</span> &mdash; el propietario elige la tarea</div>
+      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+      <div class="step"><span class="who">boot</span> <span class="file-ref">agents/owner/boot_swarm.md</span> &mdash; arranque en orden fijo</div>
+      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+      <div class="step"><span class="who">swarm</span> <span class="file-ref">custom_agent.md + NOTA-AGENTE.md</span> &mdash; trabajo auditable</div>
+      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+      <div class="step"><span class="file-ref">agents/reports/informe-*.md</span> + commits pequeños</div>
+      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+      <div class="step"><span class="who">revisor</span> <span class="file-ref">REVISOR.md</span> &mdash; diff, contraste con la fuente de verdad, verificación independiente</div>
+      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
+      <div class="step"><span class="reward">nota 1-10</span> &rarr; actualiza <span class="file-ref">NOTA-AGENTE.md</span> &rarr; la siguiente entrega aprende</div>
+    </div>
+  </div>
+</section>
+
+<section id="principios">
+  <div class="container">
+    <h2>Los 5 principios que lo hacen funcionar</h2>
+    <div class="principios">
+      <div class="principio">
+        <strong>Fuente de verdad explícita</strong>
+        <span>Todo dato rastreable a su origen. Nada inventado ni aproximado: un 90% auditable vale más que un 100% con un dato falso.</span>
+      </div>
+      <div class="principio">
+        <strong>Los datos viajan por pipeline</strong>
+        <span>Si el dato viene de una fuente externa, existe un script que lo extrae y genera código. Los datos a mano mueren con el primer patch.</span>
+      </div>
+      <div class="principio">
+        <strong>Informe obligatorio a archivo</strong>
+        <span>El swarm escribe un informe de 8 secciones y lo commitea. Sin informe, la entrega está incompleta. Es lo que hace posible la revisión.</span>
+      </div>
+      <div class="principio">
+        <strong>Separación de capas</strong>
+        <span>Aprendizaje (NOTA-AGENTE) &ne; contrato (custom_agent.md) &ne; memoria del proyecto (AGENTS.md). El evaluado jamás reescribe sus reglas.</span>
+      </div>
+      <div class="principio">
+        <strong>Commits pequeños y atómicos</strong>
+        <span>La revisión diffea paso a paso y los errores se revierten con precisión quirúrgica.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="estructura">
+  <div class="container">
+    <h2>Estructura</h2>
+    <div class="tree"><span class="dir">TaskProgressionSwarm/</span>
+├── README.md                  <span class="comment"># instrucciones de montaje</span>
+├── TODO.md                    <span class="comment"># estado del proyecto: hecho / pendiente / ideas</span>
+├── AGENTS.md                  <span class="comment"># memoria: gotchas, geografía, pipeline</span>
+├── CONTEXTO.md                <span class="comment"># decisiones finas que no caben en AGENTS.md</span>
+└── <span class="dir">agents/</span>
+    ├── README.md              <span class="comment"># mapa de roles + diagrama del bucle</span>
+    ├── <span class="dir">owner/</span>
+    │   └── boot_swarm.md      <span class="key"># arranque automático del swarm</span>
+    ├── <span class="dir">swarm/</span>
+    │   ├── custom_agent.md    <span class="key"># protocolo de trabajo del swarm</span>
+    │   └── NOTA-AGENTE.md     <span class="comment"># feedback de evolución (lo escribe el revisor)</span>
+    ├── <span class="dir">revisor/</span>
+    │   ├── REVISOR.md         <span class="key"># protocolo y memoria del evaluador</span>
+    │   └── first_boot_revisor_builder.md  <span class="comment"># montaje asistido</span>
+    └── <span class="dir">reports/</span>            <span class="comment"># informes de entrega (uno por tarea)</span></div>
+  </div>
+</section>
+
+<section id="montaje">
+  <div class="container">
+    <h2>Montaje en 10 minutos</h2>
+    <p class="lead">Vía asistida: carga <code style="font-family:var(--mono);color:var(--accent)">agents/revisor/first_boot_revisor_builder.md</code> en tu agente revisor y responde a su entrevista por bloques. Vía manual:</p>
+    <ol class="steps">
+      <li><div><strong>Copia el contenido a la raíz de tu proyecto</strong><span>TODO.md y AGENTS.md deben quedar en la raíz, no en una subcarpeta.</span></div></li>
+      <li><div><strong>Sustituye los placeholders</strong><span>{{PROJECT_NAME}}, {{PKG_MANAGER}}, {{CHECK_CMD}}, {{BUILD_CMD}}, {{DATA_SOURCE}}, {{REPORT_PATH}}&hellip;</span></div></li>
+      <li><div><strong>Rellena TODO.md</strong><span>Tus tareas reales. El swarm solo trabaja tareas que estén ahí.</span></div></li>
+      <li><div><strong>Rellena AGENTS.md</strong><span>Cada gotcha que escribas es una hora que tu swarm no perderá redescubriéndolo.</span></div></li>
+      <li><div><strong>Inicializa git y haz el primer commit</strong><span>El sistema necesita commits pequeños: la revisión y el revert dependen de ello.</span></div></li>
+      <li><div><strong>Ejecuta el boot</strong><span>Carga agents/owner/boot_swarm.md en tu swarm al iniciar cualquier tarea.</span></div></li>
+      <li><div><strong>Pide la revisión al terminar</strong><span>Carga agents/revisor/REVISOR.md. La nota 1-10 es tu recompensa para el aprendizaje.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Extraída de un sistema real que evolucionó de nota 8 a 10 en 6 entregas.</p>
+    <p><code>boot_swarm.md</code> &middot; <code>custom_agent.md</code> &middot; <code>REVISOR.md</code> &mdash; carga el protocolo, deja que el bucle haga el resto.</p>
+  </div>
+</footer>
+
+</body>
+</html>
