@@ -3,303 +3,540 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskProgressionSwarm — plantilla de trabajo con agentes</title>
+<title>Swarm Task Progression — Presentación</title>
 <style>
   :root {
-    --bg: #0d1117;
-    --bg-soft: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --accent: #58a6ff;
-    --accent2: #3fb950;
-    --accent3: #d29922;
-    --danger: #f85149;
-    --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+    --bg: #0b0f14;
+    --panel: #121820;
+    --panel2: #161e28;
+    --line: #223041;
+    --text: #dbe4ee;
+    --muted: #8296ab;
+    --accent: #4cc38a;
+    --accent2: #58a6ff;
+    --warn: #e3b341;
+    --bad: #f85149;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
   }
-  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 1050px; margin: 0 auto; padding: 0 24px; }
 
+  /* ---------- HERO ---------- */
   header {
-    padding: 80px 0 48px;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #0d1117 0%, #10161f 100%);
+    padding: 90px 0 70px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(76,195,138,.14), transparent),
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(88,166,255,.08), transparent);
+    border-bottom: 1px solid var(--line);
   }
-  .tagline {
+  .tag {
     display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--accent2);
-    border: 1px solid var(--border);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(76,195,138,.35);
+    padding: 5px 14px;
     border-radius: 999px;
-    padding: 4px 14px;
-    margin-bottom: 20px;
-    background: var(--bg-soft);
+    margin-bottom: 22px;
   }
   h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    letter-spacing: -0.03em;
+    font-size: clamp(34px, 6vw, 58px);
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    max-width: 720px;
+    margin: 18px auto 0;
+    color: var(--muted);
+    font-size: 19px;
+  }
+  .hero-links { margin-top: 30px; }
+  .btn {
+    display: inline-block;
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
+    margin: 0 6px;
+    transition: opacity .2s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn-primary { background: var(--accent); color: #06130c; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+
+  /* ---------- SECTIONS ---------- */
+  section { padding: 70px 0; }
+  section + section { border-top: 1px solid var(--line); }
+  h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    letter-spacing: -.5px;
+  }
+  h2 .k {
+    color: var(--accent2);
+    font-family: Consolas, monospace;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  .lead { color: var(--muted); max-width: 700px; margin-bottom: 40px; }
+
+  /* ---------- DIAGRAMA DEL BUCLE ---------- */
+  .diagram-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 30px 10px 10px;
+  }
+  .diagram-card svg { width: 100%; height: auto; display: block; }
+  .flow-label {
+    font-family: Consolas, monospace;
+    fill: var(--muted);
+    font-size: 13px;
+  }
+  .flow-title { fill: var(--text); font-weight: 700; font-size: 15px; }
+  .pulse-box { animation: pulseBox 3s ease-in-out infinite; }
+  .pulse-box.b2 { animation-delay: 1s; }
+  .pulse-box.b3 { animation-delay: 2s; }
+  @keyframes pulseBox {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(76,195,138,0)); }
+    50% { filter: drop-shadow(0 0 10px rgba(76,195,138,.5)); }
+  }
+  .dash-anim {
+    stroke-dasharray: 6 6;
+    animation: dashmove 1.2s linear infinite;
+  }
+  @keyframes dashmove { to { stroke-dashoffset: -12; } }
+
+  /* ---------- ROLES ---------- */
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .role {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .role::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--rc, var(--accent));
+  }
+  .role .emoji { font-size: 30px; }
+  .role h3 { margin: 10px 0 4px; font-size: 19px; }
+  .role .file {
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--rc, var(--accent));
+    display: block;
+    margin-bottom: 10px;
+  }
+  .role p { color: var(--muted); font-size: 14.5px; }
+
+  /* ---------- BAROMETRO ---------- */
+  .chart-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 30px;
+  }
+  .bars { display: flex; align-items: flex-end; gap: 26px; height: 260px; padding-top: 10px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar-val { font-weight: 800; font-size: 20px; margin-bottom: 8px; }
+  .bar {
+    width: 100%;
+    max-width: 90px;
+    border-radius: 8px 8px 0 0;
+    transform-origin: bottom;
+    animation: grow 1s ease-out both;
+  }
+  .bar-col:nth-child(1) .bar { animation-delay: .1s; }
+  .bar-col:nth-child(2) .bar { animation-delay: .25s; }
+  .bar-col:nth-child(3) .bar { animation-delay: .4s; }
+  .bar-col:nth-child(4) .bar { animation-delay: .55s; }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .bar-label { margin-top: 10px; font-size: 13px; color: var(--muted); text-align: center; min-height: 40px; }
+  .chart-note {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .chart-note b { color: var(--text); }
+
+  /* ---------- PRINCIPIOS ---------- */
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .principles { grid-template-columns: 1fr; } }
+  .principle {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent2);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .principle b { display: block; margin-bottom: 4px; }
+  .principle span { color: var(--muted); font-size: 14px; }
+  .principle .n {
+    color: var(--accent2);
+    font-family: Consolas, monospace;
+    margin-right: 8px;
+  }
+
+  /* ---------- QUOTE ---------- */
+  .quote {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 32px;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text);
+    position: relative;
+  }
+  .quote::before {
+    content: '"';
+    position: absolute;
+    top: -6px; left: 14px;
+    font-size: 70px;
+    color: var(--accent);
+    opacity: .4;
+  }
+  .quote small { display: block; margin-top: 10px; font-style: normal; color: var(--muted); }
+
+  /* ---------- CALLOUT (opción asistida) ---------- */
+  .callout {
+    background: linear-gradient(135deg, rgba(76,195,138,.14), rgba(76,195,138,.03));
+    border: 1px solid rgba(76,195,138,.4);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 34px;
+  }
+  .callout .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #06130c;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
     margin-bottom: 12px;
   }
-  h1 .highlight { color: var(--accent); }
-  .subtitle {
-    font-size: 1.15rem;
+  .callout h3 { font-size: 21px; margin-bottom: 8px; }
+  .callout p { color: var(--muted); font-size: 15px; max-width: 800px; }
+  .callout code { color: var(--accent2); }
+  .manual-tag {
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
     color: var(--muted);
-    max-width: 640px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 8px 0 2px;
+    display: block;
   }
 
-  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 24px;
-    letter-spacing: -0.02em;
-  }
-  h2::before {
-    content: "// ";
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 1.1rem;
-  }
-  p.lead { color: var(--muted); max-width: 720px; margin-bottom: 24px; }
-
-  /* Roles */
-  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-  .card {
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-  .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
-  .card p { font-size: 0.92rem; color: var(--muted); }
-  .card .file {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--accent);
-    background: rgba(88, 166, 255, 0.1);
-    border-radius: 4px;
-    padding: 2px 8px;
-    margin-top: 12px;
-  }
-  .card.owner h3 { color: var(--accent3); }
-  .card.swarm h3 { color: var(--accent); }
-  .card.revisor h3 { color: var(--accent2); }
-
-  /* Bucle */
-  .loop {
+  /* ---------- STEPS ---------- */
+  .steps { counter-reset: step; }
+  .step {
     display: flex;
-    flex-direction: column;
-    gap: 0;
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    overflow-x: auto;
-  }
-  .loop .step { padding: 6px 0; white-space: nowrap; }
-  .loop .arrow { color: var(--muted); padding-left: 12px; }
-  .loop .who { color: var(--accent); font-weight: bold; }
-  .loop .reward { color: var(--accent2); }
-  .loop .file-ref { color: var(--accent3); }
-
-  /* Principios */
-  .principios { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; counter-reset: pr; }
-  .principio {
-    border-left: 3px solid var(--accent);
-    padding: 4px 0 4px 16px;
-  }
-  .principio strong { display: block; margin-bottom: 4px; }
-  .principio span { font-size: 0.9rem; color: var(--muted); }
-  .principio::before {
-    counter-increment: pr;
-    content: counter(pr, decimal-leading-zero);
-    font-family: var(--mono);
-    color: var(--accent);
-    font-size: 0.8rem;
-  }
-
-  /* Estructura */
-  .tree {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
-    overflow-x: auto;
-    white-space: pre;
-    line-height: 1.7;
-  }
-  .tree .dir { color: var(--accent); font-weight: bold; }
-  .tree .comment { color: var(--muted); }
-  .tree .key { color: var(--accent2); }
-
-  /* Montaje */
-  .steps { list-style: none; counter-reset: st; }
-  .steps li {
-    counter-increment: st;
-    display: flex;
-    gap: 16px;
+    gap: 18px;
     padding: 14px 0;
-    border-bottom: 1px dashed var(--border);
+    border-bottom: 1px dashed var(--line);
+    align-items: baseline;
   }
-  .steps li::before {
-    content: counter(st);
-    flex: 0 0 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-weight: bold;
-    color: var(--bg);
-    background: var(--accent);
-    border-radius: 6px;
+  .step:last-child { border-bottom: none; }
+  .step::before {
+    counter-increment: step;
+    content: counter(step, decimal-leading-zero);
+    font-family: Consolas, monospace;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 30px;
   }
-  .steps strong { display: block; }
-  .steps span { color: var(--muted); font-size: 0.92rem; }
+  .step b { color: var(--text); }
+  .step span { color: var(--muted); font-size: 14.5px; }
 
+  /* ---------- FOOTER ---------- */
   footer {
-    padding: 40px 0 64px;
+    border-top: 1px solid var(--line);
+    padding: 40px 0 60px;
     text-align: center;
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 14px;
   }
-  footer code { font-family: var(--mono); color: var(--accent); }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .filetree {
+    background: #0a0e12;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 26px;
+    font-family: Consolas, monospace;
+    font-size: 13.5px;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .filetree .d { color: var(--accent2); font-weight: 700; }
+  .filetree .c { color: var(--muted); }
+  .filetree .k2 { color: var(--warn); }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="container">
-    <span class="tagline">plantilla &middot; trabajo con agentes de IA</span>
-    <h1>Task<span class="highlight">Progression</span>Swarm</h1>
-    <p class="subtitle">Un algoritmo swarm hace las tareas, un agente revisor independiente las audita contra la realidad, y la nota que emite alimenta el aprendizaje del swarm. Cada rol tiene su carpeta, cada documento su dueño.</p>
+  <div class="wrap">
+    <div class="tag">Plantilla de trabajo con agentes</div>
+    <h1>Swarm <span>Task</span> Progression</h1>
+    <p class="subtitle">
+      Un swarm ejecuta las tareas, un agente revisor independiente las audita contra la realidad,
+      y la nota que emite alimenta el aprendizaje del swarm. Extraído de un sistema real que
+      evolucionó de nota <b style="color:var(--muted)">8</b> a <b style="color:var(--accent)">10</b> en 6 entregas.
+    </p>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="https://github.com/RubenPX/swarm-task-progression">Ver en GitHub</a>
+      <a class="btn btn-ghost" href="#bucle">Cómo funciona</a>
+    </div>
   </div>
 </header>
 
-<section id="roles">
-  <div class="container">
-    <h2>Los tres roles</h2>
-    <div class="roles">
-      <div class="card owner">
-        <h3>El propietario</h3>
-        <p>Orquesta y decide. Elige la tarea del TODO.md y decide si la entrega se queda, se corrige o se revierte. Puede inyectar pruebas para verificar que la auditoría es real.</p>
-        <span class="file">agents/owner/boot_swarm.md</span>
-      </div>
-      <div class="card swarm">
-        <h3>El swarm</h3>
-        <p>El agente de trabajo. Ejecuta tareas con protocolo estricto: plan por escrito, commits pequeños y atómicos, verificación por fase e informe obligatorio de 8 secciones.</p>
-        <span class="file">agents/swarm/custom_agent.md</span>
-      </div>
-      <div class="card revisor">
-        <h3>El revisor</h3>
-        <p>El evaluador independiente. Diffea los commits, contrasta cada dato con la fuente de verdad y emite una nota 1-10: la recompensa del sistema.</p>
-        <span class="file">agents/revisor/REVISOR.md</span>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- EL BUCLE -->
 <section id="bucle">
-  <div class="container">
-    <h2>El bucle</h2>
-    <p class="lead">La nota del revisor alimenta el feedback de evolución del swarm. El evaluado jamás edita sus propias reglas: los protocolos los aplica el revisor tras aprobación del propietario.</p>
-    <div class="loop">
-      <div class="step"><span class="who">TODO.md</span> &mdash; el propietario elige la tarea</div>
-      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
-      <div class="step"><span class="who">boot</span> <span class="file-ref">agents/owner/boot_swarm.md</span> &mdash; arranque en orden fijo</div>
-      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
-      <div class="step"><span class="who">swarm</span> <span class="file-ref">custom_agent.md + NOTA-AGENTE.md</span> &mdash; trabajo auditable</div>
-      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
-      <div class="step"><span class="file-ref">agents/reports/informe-*.md</span> + commits pequeños</div>
-      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
-      <div class="step"><span class="who">revisor</span> <span class="file-ref">REVISOR.md</span> &mdash; diff, contraste con la fuente de verdad, verificación independiente</div>
-      <div class="step"><span class="arrow">&nbsp;&nbsp;&darr;</span></div>
-      <div class="step"><span class="reward">nota 1-10</span> &rarr; actualiza <span class="file-ref">NOTA-AGENTE.md</span> &rarr; la siguiente entrega aprende</div>
+  <div class="wrap">
+    <h2><span class="k">01</span>El bucle de trabajo</h2>
+    <p class="lead">
+      Todo gira alrededor de un ciclo cerrado: el TODO define qué hacer, el swarm lo ejecuta y lo documenta,
+      el revisor lo audita y puntúa, y esa nota realimenta al swarm. El repositorio git es la memoria compartida
+      y el canal de comunicación entre agentes.
+    </p>
+
+    <div class="diagram-card">
+      <svg viewBox="0 0 940 350" role="img" aria-label="Diagrama del bucle de trabajo">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/>
+          </marker>
+          <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#4cc38a"/>
+          </marker>
+        </defs>
+
+        <!-- TODO.md -->
+        <g class="pulse-box b1">
+          <rect x="20" y="140" width="150" height="64" rx="12" fill="#161e28" stroke="#223041"/>
+          <text x="95" y="167" text-anchor="middle" class="flow-title">TODO.md</text>
+          <text x="95" y="187" text-anchor="middle" class="flow-label">qué está hecho / pendiente</text>
+        </g>
+
+        <!-- boot -->
+        <g class="pulse-box b2">
+          <rect x="230" y="140" width="150" height="64" rx="12" fill="#161e28" stroke="#223041"/>
+          <text x="305" y="167" text-anchor="middle" class="flow-title">boot_swarm</text>
+          <text x="305" y="187" text-anchor="middle" class="flow-label">arranque systemd-style</text>
+        </g>
+
+        <!-- swarm -->
+        <g class="pulse-box b3">
+          <rect x="440" y="110" width="180" height="124" rx="12" fill="#0e1a13" stroke="#4cc38a"/>
+          <text x="530" y="140" text-anchor="middle" class="flow-title">SWARM</text>
+          <text x="530" y="162" text-anchor="middle" class="flow-label">custom_agent.md</text>
+          <text x="530" y="180" text-anchor="middle" class="flow-label">+ NOTA-AGENTE.md</text>
+          <text x="530" y="205" text-anchor="middle" class="flow-label">commits pequeños,</text>
+          <text x="530" y="221" text-anchor="middle" class="flow-label">informe de 8 secciones</text>
+        </g>
+
+        <!-- informe -->
+        <rect x="700" y="30" width="200" height="60" rx="10" fill="#121820" stroke="#223041" stroke-dasharray="5 4"/>
+        <text x="800" y="55" text-anchor="middle" class="flow-label">agents/reports/</text>
+        <text x="800" y="73" text-anchor="middle" class="flow-label">informe-*.md + commits</text>
+
+        <!-- revisor -->
+        <g>
+          <rect x="700" y="230" width="200" height="84" rx="12" fill="#131a26" stroke="#58a6ff"/>
+          <text x="800" y="258" text-anchor="middle" class="flow-title">REVISOR</text>
+          <text x="800" y="278" text-anchor="middle" class="flow-label">diffea · contrasta · verifica</text>
+          <text x="800" y="298" text-anchor="middle" class="flow-label" fill="#e3b341">nota 1–10</text>
+        </g>
+
+        <!-- flechas -->
+        <line x1="170" y1="172" x2="226" y2="172" stroke="#58a6ff" stroke-width="2" class="dash-anim" marker-end="url(#arrow)"/>
+        <line x1="380" y1="172" x2="436" y2="172" stroke="#58a6ff" stroke-width="2" class="dash-anim" marker-end="url(#arrow)"/>
+        <line x1="620" y1="140" x2="696" y2="72" stroke="#4cc38a" stroke-width="2" class="dash-anim" marker-end="url(#arrowG)"/>
+        <line x1="800" y1="94" x2="800" y2="226" stroke="#58a6ff" stroke-width="2" class="dash-anim" marker-end="url(#arrow)"/>
+        <text x="815" y="165" class="flow-label">lectura</text>
+
+        <!-- bucle de vuelta -->
+        <path d="M 700 272 C 500 322 330 295 240 210" fill="none" stroke="#e3b341" stroke-width="2" class="dash-anim" marker-end="url(#arrowG)"/>
+        <text x="330" y="338" text-anchor="middle" class="flow-label" fill="#e3b341">NOTA-AGENTE.md — feedback → aprendizaje</text>
+      </svg>
     </div>
   </div>
 </section>
 
-<section id="principios">
-  <div class="container">
-    <h2>Los 5 principios que lo hacen funcionar</h2>
-    <div class="principios">
-      <div class="principio">
-        <strong>Fuente de verdad explícita</strong>
-        <span>Todo dato rastreable a su origen. Nada inventado ni aproximado: un 90% auditable vale más que un 100% con un dato falso.</span>
+<!-- ROLES -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">02</span>Tres roles, responsabilidades separadas</h2>
+    <p class="lead">
+      Cada rol tiene su carpeta y cada documento su dueño. La regla de oro: <b>el evaluado jamás reescribe sus propias reglas</b>.
+    </p>
+    <div class="grid3">
+      <div class="role" style="--rc:#4cc38a">
+        <div class="emoji">🐝</div>
+        <h3>El swarm — trabajo</h3>
+        <span class="file">swarm/custom_agent.md</span>
+        <p>Ejecuta tareas del TODO.md con commits pequeños y atómicos. Cada entrega termina con un informe de 8 secciones commiteado: «si no está escrito, no existe».</p>
       </div>
-      <div class="principio">
-        <strong>Los datos viajan por pipeline</strong>
-        <span>Si el dato viene de una fuente externa, existe un script que lo extrae y genera código. Los datos a mano mueren con el primer patch.</span>
+      <div class="role" style="--rc:#58a6ff">
+        <div class="emoji">🔍</div>
+        <h3>El revisor — verificación</h3>
+        <span class="file">revisor/REVISOR.md</span>
+        <p>Agente independiente que diffea commit a commit, recalcula a mano, verifica la frescura de los datos y emite la nota 1–10. «Juez y parte corrompería la señal».</p>
       </div>
-      <div class="principio">
-        <strong>Informe obligatorio a archivo</strong>
-        <span>El swarm escribe un informe de 8 secciones y lo commitea. Sin informe, la entrega está incompleta. Es lo que hace posible la revisión.</span>
-      </div>
-      <div class="principio">
-        <strong>Separación de capas</strong>
-        <span>Aprendizaje (NOTA-AGENTE) &ne; contrato (custom_agent.md) &ne; memoria del proyecto (AGENTS.md). El evaluado jamás reescribe sus reglas.</span>
-      </div>
-      <div class="principio">
-        <strong>Commits pequeños y atómicos</strong>
-        <span>La revisión diffea paso a paso y los errores se revierten con precisión quirúrgica.</span>
+      <div class="role" style="--rc:#e3b341">
+        <div class="emoji">👤</div>
+        <h3>El propietario — orquestación</h3>
+        <span class="file">owner/boot_swarm.md</span>
+        <p>Humano que decide qué tarea se hace, aprueba cambios de protocolo y usa la nota como recompensa para la evolución del sistema.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="estructura">
-  <div class="container">
-    <h2>Estructura</h2>
-    <div class="tree"><span class="dir">TaskProgressionSwarm/</span>
-├── README.md                  <span class="comment"># instrucciones de montaje</span>
-├── TODO.md                    <span class="comment"># estado del proyecto: hecho / pendiente / ideas</span>
-├── AGENTS.md                  <span class="comment"># memoria: gotchas, geografía, pipeline</span>
-├── CONTEXTO.md                <span class="comment"># decisiones finas que no caben en AGENTS.md</span>
-└── <span class="dir">agents/</span>
-    ├── README.md              <span class="comment"># mapa de roles + diagrama del bucle</span>
-    ├── <span class="dir">owner/</span>
-    │   └── boot_swarm.md      <span class="key"># arranque automático del swarm</span>
-    ├── <span class="dir">swarm/</span>
-    │   ├── custom_agent.md    <span class="key"># protocolo de trabajo del swarm</span>
-    │   └── NOTA-AGENTE.md     <span class="comment"># feedback de evolución (lo escribe el revisor)</span>
-    ├── <span class="dir">revisor/</span>
-    │   ├── REVISOR.md         <span class="key"># protocolo y memoria del evaluador</span>
-    │   └── first_boot_revisor_builder.md  <span class="comment"># montaje asistido</span>
-    └── <span class="dir">reports/</span>            <span class="comment"># informes de entrega (uno por tarea)</span></div>
+<!-- BAROMETRO -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">03</span>El barómetro de notas</h2>
+    <p class="lead">
+      La nota del revisor no es un simple número: lleva desglose de qué sumó, qué restó y por qué.
+      Es la señal que guía la evolución del sistema.
+    </p>
+    <div class="chart-card">
+      <div class="bars">
+        <div class="bar-col">
+          <div class="bar-val" style="color:#f85149">≤7</div>
+          <div class="bar" style="height:22%; background:linear-gradient(180deg,#f85149,#7d2620)"></div>
+          <div class="bar-label">Rechazo: datos inventados, informe ausente o regla dura violada</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-val" style="color:#e3b341">8</div>
+          <div class="bar" style="height:52%; background:linear-gradient(180deg,#e3b341,#7a5c1a)"></div>
+          <div class="bar-label">Trabajo sólido con 1 bug de datos o proceso, sin gravedad</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-val" style="color:#58a6ff">9</div>
+          <div class="bar" style="height:72%; background:linear-gradient(180deg,#58a6ff,#1d4480)"></div>
+          <div class="bar-label">Trazabilidad ejemplar, 1–2 deudas menores declaradas</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-val" style="color:#4cc38a">10</div>
+          <div class="bar" style="height:92%; background:linear-gradient(180deg,#4cc38a,#1d5c3a)"></div>
+          <div class="bar-label">Trazabilidad total + decisiones justificadas + deudas saldadas</div>
+        </div>
+      </div>
+      <p class="chart-note">
+        <b>Regla del sistema:</b> un 90% correcto y auditable vale más que un 100% con un dato inventado.
+        La nota del sistema original subió de 8 a 10 en 6 entregas gracias a este bucle.
+      </p>
+    </div>
   </div>
 </section>
 
-<section id="montaje">
-  <div class="container">
-    <h2>Montaje en 10 minutos</h2>
-    <p class="lead">Vía asistida: carga <code style="font-family:var(--mono);color:var(--accent)">agents/revisor/first_boot_revisor_builder.md</code> en tu agente revisor y responde a su entrevista por bloques. Vía manual:</p>
-    <ol class="steps">
-      <li><div><strong>Copia el contenido a la raíz de tu proyecto</strong><span>TODO.md y AGENTS.md deben quedar en la raíz, no en una subcarpeta.</span></div></li>
-      <li><div><strong>Sustituye los placeholders</strong><span>{{PROJECT_NAME}}, {{PKG_MANAGER}}, {{CHECK_CMD}}, {{BUILD_CMD}}, {{DATA_SOURCE}}, {{REPORT_PATH}}&hellip;</span></div></li>
-      <li><div><strong>Rellena TODO.md</strong><span>Tus tareas reales. El swarm solo trabaja tareas que estén ahí.</span></div></li>
-      <li><div><strong>Rellena AGENTS.md</strong><span>Cada gotcha que escribas es una hora que tu swarm no perderá redescubriéndolo.</span></div></li>
-      <li><div><strong>Inicializa git y haz el primer commit</strong><span>El sistema necesita commits pequeños: la revisión y el revert dependen de ello.</span></div></li>
-      <li><div><strong>Ejecuta el boot</strong><span>Carga agents/owner/boot_swarm.md en tu swarm al iniciar cualquier tarea.</span></div></li>
-      <li><div><strong>Pide la revisión al terminar</strong><span>Carga agents/revisor/REVISOR.md. La nota 1-10 es tu recompensa para el aprendizaje.</span></div></li>
-    </ol>
+<!-- ESTRUCTURA -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">04</span>Anatomía del repositorio</h2>
+    <p class="lead">No hay código ejecutable: es un sistema operativo de agentes hecho solo de Markdown y git.</p>
+    <div class="filetree">
+<span class="d">├──</span> TODO.md              <span class="c">← estado del proyecto: hecho / pendiente / ideas</span><br>
+<span class="d">├──</span> AGENTS.md            <span class="c">← memoria del proyecto (gotchas, pipeline)</span><br>
+<span class="d">├──</span> CONTEXTO.md          <span class="c">← decisiones vigentes entre sesiones</span><br>
+<span class="d">└──</span> <span class="d">agents/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="d">&nbsp;&nbsp;&nbsp;├──</span> owner/<span class="k2">boot_swarm.md</span>      <span class="c">← arranque automático (systemd del swarm)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="d">&nbsp;&nbsp;&nbsp;├──</span> swarm/<span class="k2">custom_agent.md</span>   <span class="c">← protocolo de trabajo del swarm</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="d">&nbsp;&nbsp;&nbsp;├──</span> swarm/<span class="k2">NOTA-AGENTE.md</span>    <span class="c">← feedback de evolución (lo escribe el revisor)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="d">&nbsp;&nbsp;&nbsp;├──</span> revisor/<span class="k2">REVISOR.md</span>      <span class="c">← protocolo y memoria del evaluador</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="d">&nbsp;&nbsp;&nbsp;└──</span> reports/                <span class="c">← un informe por tarea, commiteado</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPIOS -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">05</span>Los 5 principios que hacen funcionar el sistema</h2>
+    <div class="principles">
+      <div class="principle"><b><span class="n">1</span>Fuente de verdad explícita</b><span>Todo dato debe rastrearse a su origen. Nada inventado, nada «aproximado».</span></div>
+      <div class="principle"><b><span class="n">2</span>Los datos viajan por pipeline</b><span>Si viene de una fuente externa, existe un script que lo extrae y genera código. Los datos a mano mueren con el primer patch.</span></div>
+      <div class="principle"><b><span class="n">3</span>Informe obligatorio a archivo</b><span>8 secciones, commiteado como último commit. Sin informe, la entrega está incompleta.</span></div>
+      <div class="principle"><b><span class="n">4</span>Separación de capas</b><span>Aprendizaje ≠ contrato ≠ memoria del proyecto. El evaluado jamás reescribe sus propias reglas.</span></div>
+      <div class="principle" style="grid-column: 1 / -1; border-left-color: #4cc38a;"><b><span class="n">5</span>Commits pequeños y atómicos</b><span>La revisión diffea paso a paso y los errores se revierten con precisión quirúrgica. El git limpio es la infraestructura de todo lo demás.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LECCIONES -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">06</span>Lecciones del sistema real</h2>
+    <div class="quote">
+      El crash más tonto (un <code style="color:var(--accent2)">m[3]</code> de un regex de 2 grupos) lo detectó el swarm, no el humano ni el revisor:
+      la doble verificación funciona en ambas direcciones.
+      <small>— README del proyecto, lecciones aprendidas antes de tocar nada</small>
+    </div>
+  </div>
+</section>
+
+<!-- EMPEZAR -->
+<section>
+  <div class="wrap">
+    <h2><span class="k">07</span>Montaje en 10 minutos</h2>
+    <div class="callout">
+      <span class="badge">Comportamiento por defecto</span>
+      <h3>⚡ Opción asistida — el camino recomendado</h3>
+      <p>
+        Es lo primero que deberías probar al hacer setup del proyecto. Carga
+        <code>agents/revisor/first_boot_revisor_builder.md</code> en tu agente revisor y deja que haga el trabajo:
+        te entrevista por bloques (identidad, stack, fuente de datos, zonas prohibidas, tareas),
+        rellena la plantilla con tus respuestas, verifica que quedan <b style="color:var(--accent)">0 placeholders</b> y commitea.
+        Tú solo respondes preguntas.
+      </p>
+    </div>
+    <span class="manual-tag">// Opción manual — 6 pasos (si prefieres controlar cada ficha)</span>
+    <div class="steps">
+      <div class="step"><div><b>Copia la plantilla a la raíz</b> <span>— TODO.md y AGENTS.md deben vivir en la raíz del proyecto, no en una subcarpeta.</span></div></div>
+      <div class="step"><div><b>Sustituye los {{PLACEHOLDER}}</b> <span>— búscalos con <code style="color:var(--accent2)">Select-String "{{"</code>: nombre, gestor de paquetes, comandos de check/build, fuente de datos y ruta de informes.</span></div></div>
+      <div class="step"><div><b>Rellena TODO.md y AGENTS.md</b> <span>— cada gotcha que escribas es una hora que el swarm no perderá redescubriéndolo.</span></div></div>
+      <div class="step"><div><b>Primer commit</b> <span>— la revisión y el revert dependen de commits pequeños y atómicos.</span></div></div>
+      <div class="step"><div><b>Ejecuta el boot</b> <span>— carga boot_swarm.md: el swarm preguntará qué tarea quieres y trabajará según el protocolo.</span></div></div>
+      <div class="step"><div><b>Pide la revisión</b> <span>— carga REVISOR.md tras cada entrega: la nota 1–10 es tu recompensa para el aprendizaje.</span></div></div>
+    </div>
   </div>
 </section>
 
 <footer>
-  <div class="container">
-    <p>Extraída de un sistema real que evolucionó de nota 8 a 10 en 6 entregas.</p>
-    <p><code>boot_swarm.md</code> &middot; <code>custom_agent.md</code> &middot; <code>REVISOR.md</code> &mdash; carga el protocolo, deja que el bucle haga el resto.</p>
+  <div class="wrap">
+    <p>Swarm Task Progression — plantilla de trabajo con agentes · <a href="https://github.com/RubenPX/swarm-task-progression">github.com/RubenPX/swarm-task-progression</a></p>
+    <p style="margin-top:8px; opacity:.6;">Bucle de trabajo → revisión → recompensa, en Markdown y git. Sin gradiente, sin pesos, sin humo.</p>
   </div>
 </footer>
 
